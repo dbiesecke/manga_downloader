@@ -8,6 +8,8 @@ from parsers.base import SiteParserBase
 from util import fixFormatting, getSourceCode
 
 class Batoto(SiteParserBase):
+# -*- coding: iso-8859-1 -*-
+
     class PointlessThing2:
         def __init__(self):
             self.r = 0
@@ -35,9 +37,9 @@ class Batoto(SiteParserBase):
         return l['href']
 
     def parseSite(self):
-        print("Beginning Batoto check: {0}".format(self.manga))
+        print("Beginning Batoto check: {}".format(self.manga))
 
-        url = "http://www.batoto.net/search?name={0}&name_cond=c".format('+'.join(self.manga.split()))
+        url = "http://www.batoto.net/search?name={}&name_cond=c".format('+'.join(self.manga.split()))
         s = getSourceCode(url, self.proxy)
         soup = BeautifulSoup(s)
         a = soup.find("div", id="comic_search_results")
@@ -48,7 +50,7 @@ class Batoto(SiteParserBase):
                 e = i.td.findAll('a')[1]
                 u = e['href']
                 t = e.img.next_sibling[1:]
-                seriesl.append((u,t.encode('utf-8')))
+                seriesl.append((u,t.encode('iso-8859-1')))
             except:
                 pass
 
@@ -63,7 +65,7 @@ class Batoto(SiteParserBase):
         s = getSourceCode(manga, self.proxy)
         soup = BeautifulSoup(s)
         t = soup.find("table", class_="chapters_list").tbody
-        cl = t.find_all("tr", class_="lang_English")
+        cl = t.find_all("tr", class_="lang_German")
         self.chapters = [[]]
         cnum = self.chapters[0]
 
@@ -99,7 +101,7 @@ class Batoto(SiteParserBase):
             if len(i) == 1 or sc == None:
                 if sc != None and sc[2] != i[0][2]:
                     if self.verbose_FLAG:
-                        print("switched to {0} at {1}".format(i[0][2], i[0][3]))
+                        print("switched to {} at {}".format(i[0][2], i[0][3]))
                 sc = i[0]
                 del i[1:]
                 continue
@@ -108,7 +110,7 @@ class Batoto(SiteParserBase):
                 c = self.get_next_url(sc[0])
                 i[0] = [n for n in i if n[0] == c][0]
                 if self.verbose_FLAG:
-                    print("Anomaly at chapter {0} ({1} matches, chose {2})".format(i[0][3], len(ll), i[0][2]))
+                    print("Anomaly at chapter {} ({} matches, chose {})".format(i[0][3], len(ll), i[0][2]))
                 del i[1:]
                 sc = i[0]
                 continue
@@ -121,7 +123,7 @@ class Batoto(SiteParserBase):
         # which ones do we want?
         if (not self.auto):
             for n,c in enumerate(self.chapters):
-                print("{0:03d}. {1}".format(n+1, c[1].encode('utf-8')))
+                print("{:03d}. {}".format(n+1, c[1].encode('iso-8859-1')))
             self.chapters_to_download = self.selectChapters(self.chapters)
         # XML component
         else:
